@@ -1,0 +1,49 @@
+{
+  "name": "portfolio-backend",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start:dev": "nest start --watch",
+    "start:prod": "node dist/src/main.js",
+    "build": "nest build",
+    "test": "node ./node_modules/typescript/bin/tsc --target ES2022 --module commonjs --moduleResolution node --esModuleInterop --experimentalDecorators --emitDecoratorMetadata --skipLibCheck --strictNullChecks --types node --rootDir . --outDir dist test/experiences.service.spec.ts test/projects.service.spec.ts test/profile-media.service.spec.ts test/media.service.spec.ts test/interests.service.spec.ts test/admin-dashboard.service.spec.ts test/auth.controller.spec.ts test/controller-auth.spec.ts test/environment.spec.ts test/auth.guard.spec.ts && node --test dist/test/experiences.service.spec.js dist/test/projects.service.spec.js dist/test/profile-media.service.spec.js dist/test/media.service.spec.js dist/test/interests.service.spec.js dist/test/admin-dashboard.service.spec.js dist/test/auth.controller.spec.js dist/test/controller-auth.spec.js dist/test/environment.spec.js dist/test/auth.guard.spec.js",
+    "db:generate": "node --env-file-if-exists=../.env ./node_modules/prisma/build/index.js generate",
+    "db:apply:experience-achievements": "node --env-file=../.env ./node_modules/prisma/build/index.js db execute --schema prisma/schema.prisma --file prisma/manual_migrations/add_experience_achievements.sql",
+    "db:apply:project-schema": "node --env-file=../.env ./node_modules/prisma/build/index.js db execute --schema prisma/schema.prisma --file prisma/manual_migrations/add_project_slug_featured.sql",
+    "owner:create": "node --env-file=../.env --import tsx scripts/create-owner.ts"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.1.6",
+    "@nestjs/config": "^4.0.2",
+    "@nestjs/core": "^11.1.6",
+    "@nestjs/jwt": "^11.0.1",
+    "@nestjs/platform-express": "^11.1.6",
+    "@prisma/client": "^6.19.0",
+    "bcrypt": "^6.0.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.2",
+    "cookie-parser": "^1.4.7",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^11.0.10",
+    "@types/bcrypt": "^6.0.0",
+    "@types/cookie-parser": "^1.4.9",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.3.0",
+    "prisma": "^6.19.0",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  },
+  "overrides": {
+    "deepmerge-ts": "^8.0.1"
+  },
+  "allowScripts": {
+    "@prisma/client@6.19.3": true,
+    "@prisma/engines@6.19.3": true,
+    "bcrypt@6.0.0": true,
+    "esbuild@0.28.2": true,
+    "prisma@6.19.3": true
+  }
+}

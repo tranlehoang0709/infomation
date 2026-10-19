@@ -1,0 +1,222 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           BigInt     @id @default(autoincrement()) @db.UnsignedBigInt
+  email        String     @unique @db.VarChar(255)
+  passwordHash String     @map("password_hash") @db.VarChar(255)
+  isActive     Boolean    @default(true) @map("is_active")
+  lastLoginAt  DateTime?  @map("last_login_at") @db.DateTime(3)
+  createdAt    DateTime   @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt    DateTime   @default(now()) @updatedAt @map("updated_at") @db.DateTime(3)
+  portfolio    Portfolio?
+
+  @@map("users")
+}
+
+model Portfolio {
+  id                  BigInt              @id @default(autoincrement()) @db.UnsignedBigInt
+  userId              BigInt              @unique @map("user_id") @db.UnsignedBigInt
+  title               String              @db.VarChar(150)
+  slug                String              @unique @db.VarChar(100)
+  isPublished         Boolean             @default(false) @map("is_published")
+  // DDL keeps the composite published-revision FK in MySQL; retain its scalar here without adding a synthetic unique index.
+  publishedRevisionId BigInt?             @map("published_revision_id") @db.UnsignedBigInt
+  createdAt           DateTime            @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt           DateTime            @default(now()) @updatedAt @map("updated_at") @db.DateTime(3)
+  user                User                @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  profile             Profile?
+  educations          Education[]
+  certificates        Certificate[]
+  skills              Skill[]
+  experiences         Experience[]
+  interests           Interest[]
+  projects            Project[]
+  mediaAssets         MediaAsset[]
+  mediaLinks          PortfolioMedia[]
+  revisions           PortfolioRevision[] @relation("PortfolioRevisions")
+
+  @@map("portfolios")
+}
+
+model Profile {
+  id            BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  portfolioId   BigInt    @unique @map("portfolio_id") @db.UnsignedBigInt
+  fullName      String    @map("full_name") @db.VarChar(150)
+  headline      String?   @db.VarChar(200)
+  phone         String?   @db.VarChar(30)
+  contactEmail  String?   @map("contact_email") @db.VarChar(255)
+  location      String?   @db.VarChar(255)
+  bio           String?   @db.Text
+  avatarMediaId BigInt?   @map("avatar_media_id") @db.UnsignedBigInt
+  cvMediaId     BigInt?   @map("cv_media_id") @db.UnsignedBigInt
+  createdAt     DateTime  @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt     DateTime  @default(now()) @updatedAt @map("updated_at") @db.DateTime(3)
+  portfolio     Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("profiles")
+}
+
+model Education {
+  id          BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  portfolioId BigInt    @map("portfolio_id") @db.UnsignedBigInt
+  schoolName  String    @map("school_name") @db.VarChar(255)
+  degree      String?   @db.VarChar(150)
+  major       String?   @db.VarChar(200)
+  startDate   DateTime? @map("start_date") @db.Date
+  endDate     DateTime? @map("end_date") @db.Date
+  isCurrent   Boolean   @default(false) @map("is_current")
+  description String?   @db.Text
+  sortOrder   Int       @default(0) @map("sort_order")
+  isVisible   Boolean   @default(true) @map("is_visible")
+  createdAt   DateTime  @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at") @db.DateTime(3)
+  portfolio   Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("educations")
+}
+
+model Certificate {
+  id             BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  portfolioId    BigInt    @map("portfolio_id") @db.UnsignedBigInt
+  name           String    @db.VarChar(255)
+  issuer         String?   @db.VarChar(255)
+  credentialCode String?   @map("credential_code") @db.VarChar(150)
+  issueDate      DateTime? @map("issue_date") @db.Date
+  expiryDate     DateTime? @map("expiry_date") @db.Date
+  credentialUrl  String?   @map("credential_url") @db.VarChar(2048)
+  description    String?   @db.Text
+  sortOrder      Int       @default(0) @map("sort_order")
+  isVisible      Boolean   @default(true) @map("is_visible")
+  createdAt      DateTime  @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt      DateTime  @default(now()) @updatedAt @map("updated_at") @db.DateTime(3)
+  portfolio      Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("certificates")
+}
+
+model Skill {
+  id          BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  portfolioId BigInt    @map("portfolio_id") @db.UnsignedBigInt
+  name        String    @db.VarChar(100)
+  category    String?   @db.VarChar(100)
+  proficiency Int?      @db.UnsignedTinyInt
+  description String?   @db.VarChar(500)
+  sortOrder   Int       @default(0) @map("sort_order")
+  isVisible   Boolean   @default(true) @map("is_visible")
+  createdAt   DateTime  @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at") @db.DateTime(3)
+  portfolio   Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("skills")
+}
+
+model Experience {
+  id             BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  portfolioId    BigInt    @map("portfolio_id") @db.UnsignedBigInt
+  companyName    String    @map("company_name") @db.VarChar(255)
+  position       String    @db.VarChar(200)
+  employmentType String?   @map("employment_type") @db.VarChar(50)
+  location       String?   @db.VarChar(255)
+  startDate      DateTime? @map("start_date") @db.Date
+  endDate        DateTime? @map("end_date") @db.Date
+  isCurrent      Boolean   @default(false) @map("is_current")
+  description    String?   @db.Text
+  achievements   Json?     @db.Json
+  sortOrder      Int       @default(0) @map("sort_order")
+  isVisible      Boolean   @default(true) @map("is_visible")
+  createdAt      DateTime  @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt      DateTime  @default(now()) @updatedAt @map("updated_at") @db.DateTime(3)
+  portfolio      Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("experiences")
+}
+
+model Interest {
+  id          BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  portfolioId BigInt    @map("portfolio_id") @db.UnsignedBigInt
+  title       String    @db.VarChar(150)
+  description String?   @db.Text
+  sortOrder   Int       @default(0) @map("sort_order")
+  isVisible   Boolean   @default(true) @map("is_visible")
+  createdAt   DateTime  @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at") @db.DateTime(3)
+  portfolio   Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("interests")
+}
+
+model Project {
+  id           BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  portfolioId  BigInt    @map("portfolio_id") @db.UnsignedBigInt
+  name         String    @db.VarChar(255)
+  summary      String?   @db.VarChar(500)
+  description  String?   @db.Text
+  role         String?   @db.VarChar(150)
+  slug         String?   @db.VarChar(180)
+  technologies Json?     @db.Json
+  githubUrl    String?   @map("github_url") @db.VarChar(2048)
+  demoUrl      String?   @map("demo_url") @db.VarChar(2048)
+  startDate    DateTime? @map("start_date") @db.Date
+  endDate      DateTime? @map("end_date") @db.Date
+  sortOrder    Int       @default(0) @map("sort_order")
+  isFeatured   Boolean   @default(false) @map("is_featured")
+  isVisible    Boolean   @default(true) @map("is_visible")
+  createdAt    DateTime  @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at") @db.DateTime(3)
+  portfolio    Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([portfolioId, slug], map: "uq_projects_portfolio_slug")
+  @@map("projects")
+}
+
+model MediaAsset {
+  id            BigInt          @id @default(autoincrement()) @db.UnsignedBigInt
+  portfolioId   BigInt          @map("portfolio_id") @db.UnsignedBigInt
+  originalName  String          @map("original_name") @db.VarChar(255)
+  storedName    String          @unique @map("stored_name") @db.VarChar(255)
+  storagePath   String          @map("storage_path") @db.VarChar(1024)
+  mimeType      String          @map("mime_type") @db.VarChar(100)
+  fileSize      BigInt          @map("file_size") @db.UnsignedBigInt
+  altText       String?         @map("alt_text") @db.VarChar(255)
+  createdAt     DateTime        @default(now()) @map("created_at") @db.DateTime(3)
+  portfolio     Portfolio       @relation(fields: [portfolioId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  portfolioLinks PortfolioMedia[]
+
+  @@unique([portfolioId, id], map: "uq_media_portfolio_id")
+  @@map("media_assets")
+}
+
+model PortfolioMedia {
+  id           BigInt     @id @default(autoincrement()) @db.UnsignedBigInt
+  portfolioId  BigInt     @map("portfolio_id") @db.UnsignedBigInt
+  mediaAssetId BigInt     @map("media_asset_id") @db.UnsignedBigInt
+  entityType   String     @map("entity_type") @db.VarChar(30)
+  entityId     BigInt     @map("entity_id") @db.UnsignedBigInt
+  mediaRole    String     @default("gallery") @map("media_role") @db.VarChar(30)
+  sortOrder    Int        @default(0) @map("sort_order")
+  createdAt    DateTime   @default(now()) @map("created_at") @db.DateTime(3)
+  portfolio    Portfolio  @relation(fields: [portfolioId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  mediaAsset   MediaAsset @relation(fields: [portfolioId, mediaAssetId], references: [portfolioId, id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("portfolio_media")
+}
+
+model PortfolioRevision {
+  id             BigInt     @id @default(autoincrement()) @db.UnsignedBigInt
+  portfolioId    BigInt     @map("portfolio_id") @db.UnsignedBigInt
+  revisionNumber Int        @map("revision_number") @db.UnsignedInt
+  snapshot       Json       @db.Json
+  createdAt      DateTime   @default(now()) @map("created_at") @db.DateTime(3)
+  portfolio      Portfolio  @relation("PortfolioRevisions", fields: [portfolioId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([portfolioId, revisionNumber], map: "uq_revision_number")
+  @@unique([portfolioId, id], map: "uq_revision_portfolio_id")
+  @@map("portfolio_revisions")
+}
