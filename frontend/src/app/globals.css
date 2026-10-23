@@ -28,7 +28,7 @@ a { color: inherit; text-decoration: none; }
 .shadow-sm, [class*="shadow-[0_24px"] { box-shadow: 0 24px 80px -48px rgba(0,0,0,.8); }
 select.control option { background: var(--surface); color: var(--ink); }
 input[type="checkbox"], input[type="radio"] { accent-color: #39ff88; }
-::selection { color: #101810; background: #e5e7eb; }
+::selection { color: #080b09; background: #39ff88; }
 .public-atmosphere-root { position: relative; isolation: isolate; min-height: 100vh; overflow-x: clip; }
 .public-atmosphere-root::before, .public-atmosphere-root::after { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; will-change: background-position, transform; }
 .public-atmosphere-root::before { background-image: linear-gradient(180deg, rgba(255,255,255,.18), transparent 28%, rgba(57,255,136,.055) 52%, transparent 76%, rgba(255,255,255,.18)), radial-gradient(rgba(255,255,255,.11) .7px, transparent .9px); background-size: 100% 100%, 38px 38px; background-repeat: no-repeat, repeat; }
@@ -146,125 +146,36 @@ button:focus-visible, [role="button"]:focus-visible, .bg-blue-700:focus-visible 
 }
 
 /* Public portfolio mirrors the admin workspace layout while remaining read-only. */
-.public-workspace { width: 100%; background: #fff; color: #101810; }
-.public-workspace > div > header { padding-left: max(1rem, calc((100vw - 1600px) / 2)); padding-right: max(1rem, calc((100vw - 1600px) / 2)); }
-.public-workspace-nav { border-color: rgba(16,24,16,.14); padding-left: max(1rem, calc((100vw - 1600px) / 2)); padding-right: max(1rem, calc((100vw - 1600px) / 2)); }
+.public-workspace { background: #fff; color: #101810; }
+.public-workspace-nav { border-color: rgba(16,24,16,.14); }
 .public-workspace-nav a { flex-shrink: 0; border-radius: .5rem; padding: .5rem .75rem; color: #101810; font-size: .875rem; font-weight: 650; }
 .public-workspace-nav a:hover { background: #f0fdf4; color: #166534; }
-.shared-field-value { display: inline; }
-.shared-field-value > * { display: inline; }
-.shared-field-value > div { display: inline-flex; }
-.public-workspace .public-section { width: 100vw; margin-left: calc(50% - 50vw); padding: 3rem max(1rem, calc((100vw - 1600px) / 2)); border-top: 1px solid rgba(16,24,16,.14); border-bottom: 1px solid rgba(16,24,16,.14); border-left: 0; border-right: 0; border-radius: 0; background: #fff !important; color: #101810 !important; }
-.public-workspace .public-section:nth-of-type(even) { background: #080b09 !important; color: #f0f5f1 !important; }
-.public-workspace .public-section:nth-of-type(odd) h1,
-.public-workspace .public-section:nth-of-type(odd) h2,
-.public-workspace .public-section:nth-of-type(odd) h3,
-.public-workspace .public-section:nth-of-type(odd) p,
-.public-workspace .public-section:nth-of-type(odd) dt,
-.public-workspace .public-section:nth-of-type(odd) dd,
-.public-workspace .public-section:nth-of-type(odd) a,
-.public-workspace .public-section:nth-of-type(odd) span { color: #101810 !important; }
-.public-workspace .public-section:nth-of-type(even) h1,
-.public-workspace .public-section:nth-of-type(even) h2,
-.public-workspace .public-section:nth-of-type(even) h3,
-.public-workspace .public-section:nth-of-type(even) p,
-.public-workspace .public-section:nth-of-type(even) dt,
-.public-workspace .public-section:nth-of-type(even) dd,
-.public-workspace .public-section:nth-of-type(even) a,
-.public-workspace .public-section:nth-of-type(even) span { color: #f0f5f1 !important; }
-.public-workspace .public-section:nth-of-type(even) article,
-.public-workspace .public-section:nth-of-type(even) section { color: #101810 !important; }
-.public-workspace .public-section:nth-of-type(even) article { background: #fff !important; color: #101810 !important; }
-.public-workspace .public-section:nth-of-type(even) article h3,
-.public-workspace .public-section:nth-of-type(even) article p,
-.public-workspace .public-section:nth-of-type(even) article a,
-.public-workspace .public-section:nth-of-type(even) article span,
-.public-workspace .public-section:nth-of-type(even) section h3,
-.public-workspace .public-section:nth-of-type(even) section p,
-.public-workspace .public-section:nth-of-type(even) section a,
-.public-workspace .public-section:nth-of-type(even) section span { color: #101810 !important; }
-.public-workspace .public-section > section { margin-top: 0; padding-top: 0; }
+.public-workspace > div > .public-section { width: 100%; padding: 3rem max(1rem, calc((100vw - 1520px) / 2)); border: 1px solid rgba(255,255,255,.1); border-radius: 1.5rem; background: #fff; }
+.public-workspace > div > .public-section:nth-of-type(even) { background: #080b09; color: #f0f5f1; }
+.public-workspace > div > .public-section:nth-of-type(even) h1,
+.public-workspace > div > .public-section:nth-of-type(even) h2,
+.public-workspace > div > .public-section:nth-of-type(even) h3,
+.public-workspace > div > .public-section:nth-of-type(even) p,
+.public-workspace > div > .public-section:nth-of-type(even) span { color: #f0f5f1; }
+.public-workspace > div > .public-section:nth-of-type(even) article,
+.public-workspace > div > .public-section:nth-of-type(even) section { color: #101810; }
+.public-workspace > div > .public-section:nth-of-type(even) article h3,
+.public-workspace > div > .public-section:nth-of-type(even) article p,
+.public-workspace > div > .public-section:nth-of-type(even) article span { color: #101810; }
+.public-workspace > div > .public-section > section { margin-top: 0; padding-top: 0; }
 
 /* Selected overview cards rise like floating stone tiles instead of showing the
    browser's default green checkbox. The native input remains keyboard accessible. */
-.share-visibility-card { transform: translateY(0); opacity: .62; filter: saturate(.55); transition: transform 260ms ease, box-shadow 260ms ease, border-color 260ms ease, opacity 260ms ease, filter 260ms ease, background-color 260ms ease; }
-.share-visibility-card-selected { border: 1px solid rgba(16,24,16,.14); background: #fff !important; box-shadow: 0 13px 0 rgba(16,24,16,.1), 0 26px 42px rgba(16,24,16,.28); opacity: 1; filter: saturate(1.08); transform: translateY(-10px) scale(1.025); animation: share-card-float 3.4s ease-in-out infinite; }
+.share-visibility-card { transform: translateY(0); opacity: .52; filter: saturate(.65); transition: transform 260ms ease, box-shadow 260ms ease, border-color 260ms ease, opacity 260ms ease, filter 260ms ease, background-color 260ms ease; }
+.share-visibility-card-selected { border: 2px solid rgba(22,167,101,.72); background: linear-gradient(145deg, #f2fff6, #d8f8e1) !important; box-shadow: 0 13px 0 rgba(16,24,16,.1), 0 26px 42px rgba(16,24,16,.28), 0 0 0 5px rgba(22,167,101,.12); opacity: 1; filter: saturate(1.08); transform: translateY(-10px) scale(1.025); animation: share-card-float 3.4s ease-in-out infinite; }
 .share-visibility-card:hover { transform: translateY(-4px); }
 .share-visibility-card-selected:hover { transform: translateY(-13px) scale(1.03); }
-.share-visibility-switch { position: relative; display: inline-flex; width: 3.1rem; height: 1.8rem; align-items: center; padding: .2rem; border: 0; border-radius: 999px; background: #9ca3af !important; box-shadow: inset 0 1px 3px rgba(0,0,0,.3); transition: background-color 180ms ease, box-shadow 180ms ease; }
-.share-visibility-switch span { display: block; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,.3); transform: translateX(0); transition: transform 220ms ease; }
-.share-visibility-switch-on { background: #16a765 !important; box-shadow: 0 0 0 4px rgba(22,167,101,.16), inset 0 1px 3px rgba(0,0,0,.2); }
-.share-visibility-switch-on span { transform: translateX(1.3rem); }
-.share-visibility-switch:focus-visible { outline: 3px solid rgba(22,167,101,.35); outline-offset: 3px; }
-.share-visibility-card a { color: #fff !important; }
-.admin-workspace > div > section .icon-action-button {
-  width: 2rem;
-  height: 2rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  border: 0 !important;
-  border-radius: .4rem;
-  background: transparent !important;
-  background-image: none !important;
-  box-shadow: none !important;
-}
-.admin-workspace > div > section .icon-edit-button { color: #2563eb !important; }
-.admin-workspace > div > section .icon-delete-button { color: #dc2626 !important; }
-.admin-workspace > div > section .icon-action-button:hover:not(:disabled) { background: #f3f4f6 !important; transform: translateY(-1px); }
-.admin-workspace > div > section .icon-action-button span {
-  display: inline-block;
-  color: inherit !important;
-  font-family: "Segoe UI Symbol", "Arial Unicode MS", sans-serif !important;
-  font-size: 1.25rem;
-  font-weight: 400;
-  line-height: 1;
-}
-.admin-workspace > div > section .icon-action-button svg { width: 1.15rem; height: 1.15rem; color: inherit !important; }
-.admin-workspace > div > section .icon-edit-button svg,
-.admin-workspace > div > section .icon-edit-button svg * { stroke: #4f46ff !important; }
-.admin-workspace > div > section .icon-delete-button svg,
-.admin-workspace > div > section .icon-delete-button svg * { stroke: #ff3b4f !important; }
+.share-visibility-toggle { cursor: pointer; user-select: none; }
+.share-visibility-toggle input { appearance: none; position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.share-visibility-toggle::before { content: ''; width: .9rem; height: .9rem; flex: 0 0 .9rem; border: 2px solid rgba(16,24,16,.38); border-radius: .3rem; background: #fff; transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease; }
+.share-visibility-card-selected .share-visibility-toggle::before { border-color: #16a765; box-shadow: 0 0 0 3px rgba(22,167,101,.16), inset 0 0 0 3px #fff; transform: translateY(-1px); }
+.share-visibility-toggle:focus-within::before { outline: 3px solid rgba(22,167,101,.28); outline-offset: 2px; }
 @keyframes share-card-float { 0%, 100% { transform: translateY(-9px) scale(1.025) rotate(0deg); } 50% { transform: translateY(-13px) scale(1.025) rotate(.25deg); } }
-
-/* Pointer motion animates only section backgrounds, leaving text and controls untouched. */
-@property --water-strength { syntax: "<number>"; inherits: false; initial-value: 0; }
-@property --water-x { syntax: "<length>"; inherits: false; initial-value: 0px; }
-@property --water-y { syntax: "<length>"; inherits: false; initial-value: 0px; }
-@property --water-radius { syntax: "<length>"; inherits: false; initial-value: 76px; }
-@property --water-tail-1-strength { syntax: "<number>"; inherits: false; initial-value: 0; }
-@property --water-tail-2-strength { syntax: "<number>"; inherits: false; initial-value: 0; }
-@property --water-tail-3-strength { syntax: "<number>"; inherits: false; initial-value: 0; }
-@property --water-tail-4-strength { syntax: "<number>"; inherits: false; initial-value: 0; }
-@property --water-tail-5-strength { syntax: "<number>"; inherits: false; initial-value: 0; }
-.water-bg-active {
-  --water-tail-1-x: 0px; --water-tail-1-y: 0px;
-  --water-tail-2-x: 0px; --water-tail-2-y: 0px;
-  --water-tail-3-x: 0px; --water-tail-3-y: 0px;
-  --water-tail-4-x: 0px; --water-tail-4-y: 0px;
-  --water-tail-5-x: 0px; --water-tail-5-y: 0px;
-  --water-paint:
-    radial-gradient(ellipse var(--water-radius) calc(var(--water-radius) * 1.3) at var(--water-x) var(--water-y), rgb(var(--water-color) / calc(var(--water-strength) * .56)) 0%, rgb(var(--water-color) / calc(var(--water-strength) * .3)) 38%, transparent 100%),
-    radial-gradient(ellipse 68px 92px at var(--water-tail-1-x) var(--water-tail-1-y), rgb(var(--water-color) / calc(var(--water-tail-1-strength) * .68)), transparent 100%),
-    radial-gradient(ellipse 58px 78px at var(--water-tail-2-x) var(--water-tail-2-y), rgb(var(--water-color) / calc(var(--water-tail-2-strength) * .68)), transparent 100%),
-    radial-gradient(ellipse 48px 64px at var(--water-tail-3-x) var(--water-tail-3-y), rgb(var(--water-color) / calc(var(--water-tail-3-strength) * .68)), transparent 100%),
-    radial-gradient(ellipse 38px 52px at var(--water-tail-4-x) var(--water-tail-4-y), rgb(var(--water-color) / calc(var(--water-tail-4-strength) * .68)), transparent 100%),
-    radial-gradient(ellipse 30px 42px at var(--water-tail-5-x) var(--water-tail-5-y), rgb(var(--water-color) / calc(var(--water-tail-5-strength) * .68)), transparent 100%);
-  background-image: var(--water-paint);
-  background-size: 100% 100%;
-  background-position: center;
-  background-repeat: no-repeat;
-  /* Keep the live spot locked to the pointer; only the afterimage should ease out. */
-  transition: --water-strength 1100ms ease-out, --water-tail-1-strength 1400ms ease-out, --water-tail-2-strength 1400ms ease-out, --water-tail-3-strength 1400ms ease-out, --water-tail-4-strength 1400ms ease-out, --water-tail-5-strength 1400ms ease-out;
-  animation: water-background-flow 5.5s ease-in-out infinite;
-}
-.public-workspace .public-section.water-bg-active { background-image: var(--water-paint) !important; }
-@keyframes water-background-flow {
-  0%, 100% { --water-radius: 72px; }
-  50% { --water-radius: 80px; }
-}
-@media (prefers-reduced-motion: reduce) { .water-bg-active { animation: none; } }
 
 /* Admin action buttons use the dark button surface, so their labels stay readable
    even inside alternating light sections with stronger inherited color rules. */
