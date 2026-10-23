@@ -1,6 +1,6 @@
 # Personal Portfolio
 
-Website portfolio cá nhân với frontend Next.js/TypeScript/Tailwind CSS, backend NestJS và Prisma/MySQL. Các module hiện có mã nguồn gồm Profile, Experiences, Projects, Media, Interests và Admin Dashboard. Education, Certificates và Skills chưa có API hoặc giao diện quản trị/công khai hoàn chỉnh.
+Personal portfolio built with Next.js, NestJS, TypeScript, Tailwind CSS, Prisma, and MySQL. Profile, education, certificates, skills, experience, projects, media, interests, and the admin dashboard use the existing application schema.
 
 ## Bắt đầu
 
@@ -14,4 +14,4 @@ Prisma ánh xạ schema theo DDL MySQL chủ dự án cung cấp. Ứng dụng k
 
 Prisma ánh xạ schema theo DDL MySQL của dự án. Ứng dụng không tự tạo database/bảng và không chạy `migrate` hoặc `db push`. Portfolio công khai chỉ được đọc khi `is_published = true`.
 
-Profile, Experiences, Projects, Media, Interests và Admin Dashboard có API/UI trong phiên bản hiện tại. Education, Certificates và Skills chưa được triển khai end-to-end; xem trạng thái và hướng dẫn chạy trong [docs/SETUP.md](docs/SETUP.md).
+Profile, Education, Certificates, Skills, Experiences, Projects, Media, Interests, and Admin Dashboard have API/UI flows. See [docs/SETUP.md](docs/SETUP.md) for setup and run instructions.

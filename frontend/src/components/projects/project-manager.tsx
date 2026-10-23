@@ -30,6 +30,7 @@ export function ProjectManager() {
   const [items, setItems] = useState<ProjectRecord[]>([]);
   const [form, setForm] = useState<ProjectInput>(empty);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [formOpen, setFormOpen] = useState(false);
   const [thumbnailPreview, setThumbnailPreview] = useState<Preview | null>(null);
   const [galleryPreviews, setGalleryPreviews] = useState<Preview[]>([]);
   const [loading, setLoading] = useState(true);
@@ -59,8 +60,8 @@ export function ProjectManager() {
     for (const preview of [thumbnailPreview, ...galleryPreviews]) if (preview?.src.startsWith('blob:')) URL.revokeObjectURL(preview.src);
     setThumbnailPreview(null); setGalleryPreviews([]);
   }
-  function cancel() { clearPreviews(); setForm(empty); setEditingId(null); setError(''); setSuccess(''); }
-  function edit(item: ProjectRecord) { clearPreviews(); setForm(toForm(item)); setEditingId(item.id); setError(''); setSuccess(''); }
+  function cancel() { clearPreviews(); setForm(empty); setEditingId(null); setFormOpen(false); setError(''); setSuccess(''); }
+  function edit(item: ProjectRecord) { clearPreviews(); setForm(toForm(item)); setEditingId(item.id); setFormOpen(true); setError(''); setSuccess(''); }
   function update<K extends keyof ProjectInput>(key: K, value: ProjectInput[K]) { setForm((current) => ({ ...current, [key]: value })); setError(''); setSuccess(''); }
 
   async function upload(file: File) {
@@ -152,13 +153,14 @@ export function ProjectManager() {
     </aside>
     <main className="px-5 py-8 sm:px-8 lg:px-12 lg:py-12"><div className="mx-auto grid max-w-7xl gap-8 xl:grid-cols-[minmax(0,1fr)_minmax(380px,.9fr)]">
       <section><p className="text-sm font-semibold text-blue-700">Nội dung hồ sơ</p><h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Dự án</h1><p className="mt-2 text-slate-600">Quản lý thông tin và trạng thái hiển thị công khai của dự án.</p>
+        <button type="button" onClick={() => { clearPreviews(); setForm(empty); setEditingId(null); setFormOpen(true); setError(''); setSuccess(''); }} className="mt-5 inline-flex items-center gap-2 rounded-xl bg-blue-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-800"><span aria-hidden="true" className="text-lg leading-none">+</span> Thêm dự án</button>
         <div className="mt-7 space-y-3">{items.length === 0 ? <p className="project-panel rounded-2xl border border-dashed border-slate-300 bg-white px-5 py-8 text-sm text-slate-500">Chưa có dự án.</p> : items.map((item) => <article key={item.id} className="project-panel flex gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
           {item.thumbnail && <img crossOrigin="use-credentials" src={apiAssetUrl(item.thumbnail.filePath)} alt={item.thumbnail.altText ?? item.name} className="size-20 rounded-xl object-cover" />}
           <div className="min-w-0 flex-1"><h2 className="font-semibold">{item.name}</h2><p className="mt-1 line-clamp-2 text-sm text-slate-600">{item.summary ?? '—'}</p><p className="mt-2 text-xs text-slate-500">{item.isVisible ? 'Đang hiển thị' : 'Đang ẩn'} · {item.isFeatured ? 'Nổi bật · ' : ''}thứ tự {item.sortOrder}</p></div>
-          <div className="flex gap-3 text-sm"><button type="button" onClick={() => edit(item)} className="font-semibold text-blue-700">Sửa</button><button type="button" disabled={busy} onClick={() => void remove(item)} className="font-semibold text-red-700 disabled:opacity-50">Xóa</button></div>
+          <div className="flex gap-3 text-sm"><button type="button" onClick={() => edit(item)} aria-label="Sửa dự án" title="Sửa dự án" className="icon-action-button icon-edit-button font-semibold text-blue-700"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="m4 20 4.2-1 10.6-10.6a2.1 2.1 0 0 0-3-3L5.2 16 4 20Z"/><path d="m14.5 6.5 3 3"/></svg></button><button type="button" disabled={busy} onClick={() => void remove(item)} aria-label="Xóa dự án" title="Xóa dự án" className="icon-action-button icon-delete-button font-semibold text-red-700 disabled:opacity-50"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M4 7h16M10 11v6M14 11v6M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button></div>
         </article>)}</div>
       </section>
-      <section className="project-panel self-start overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"><div className="border-b border-slate-100 px-6 py-5"><h2 className="font-semibold">{editingId ? 'Sửa dự án' : 'Thêm dự án'}</h2><p className="mt-1 text-sm text-slate-500">Tên dự án là bắt buộc. Để trống đường dẫn để hệ thống tự tạo từ tên.</p></div>
+      {formOpen && (<section className="project-panel self-start overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"><div className="border-b border-slate-100 px-6 py-5"><h2 className="font-semibold">{editingId ? 'Sửa dự án' : 'Thêm dự án'}</h2><p className="mt-1 text-sm text-slate-500">Tên dự án là bắt buộc. Để trống đường dẫn để hệ thống tự tạo từ tên.</p></div>
         <div className="grid gap-4 px-6 pt-5 sm:grid-cols-2"><MediaPicker label="Chọn ảnh bìa từ thư viện" value={form.thumbnailMediaId} accept="images" onChange={(value) => update('thumbnailMediaId', typeof value === 'string' ? value : null)} /><MediaPicker label="Chọn ảnh thư viện" value={form.galleryMediaIds} accept="images" multiple onChange={(value) => update('galleryMediaIds', Array.isArray(value) ? value : [])} /></div>
         <form onSubmit={(event) => void save(event)}><div className="grid gap-4 p-6 sm:grid-cols-2">
           <label className="field sm:col-span-2">Tên dự án *<input className="control" required maxLength={255} value={form.title} onChange={(e) => update('title', e.target.value)} /></label>
@@ -176,7 +178,7 @@ export function ProjectManager() {
           <div className="field sm:col-span-2">Ảnh thư viện<input className="control p-2" type="file" multiple accept="image/jpeg,image/png,image/gif,image/webp" disabled={uploading || busy} onChange={(e) => void uploadGallery(e)} /><div className="mt-2 flex flex-wrap gap-2">{gallery.map((image, index) => <div key={image.id} className="relative"><img src={image.src} alt="Xem trước ảnh dự án" className="size-20 rounded-lg object-cover" /><span className="absolute left-1 top-1 rounded bg-white/90 px-1 text-xs">{index + 1}</span><button type="button" aria-label="Chuyển ảnh lên trên" disabled={index === 0} className="absolute bottom-1 left-1 rounded bg-white px-1.5 disabled:opacity-40" onClick={() => { const ids = [...form.galleryMediaIds]; [ids[index - 1], ids[index]] = [ids[index], ids[index - 1]]; update('galleryMediaIds', ids); }}>↑</button><button type="button" aria-label="Chuyển ảnh xuống dưới" disabled={index === gallery.length - 1} className="absolute bottom-1 left-8 rounded bg-white px-1.5 disabled:opacity-40" onClick={() => { const ids = [...form.galleryMediaIds]; [ids[index], ids[index + 1]] = [ids[index + 1], ids[index]]; update('galleryMediaIds', ids); }}>↓</button><button type="button" aria-label="Gỡ ảnh khỏi thư viện" className="absolute -right-1 -top-1 rounded-full bg-red-700 px-2 text-white" onClick={() => { const preview = galleryPreviews.find(({ id }) => id === image.id); if (preview?.src.startsWith('blob:')) URL.revokeObjectURL(preview.src); update('galleryMediaIds', form.galleryMediaIds.filter((id) => id !== image.id)); setGalleryPreviews((current) => current.filter(({ id }) => id !== image.id)); }}>×</button></div>)}</div></div>
           <div className="flex flex-wrap gap-5 sm:col-span-2"><label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={form.isFeatured} onChange={(e) => update('isFeatured', e.target.checked)} /> Dự án nổi bật</label><label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={form.isVisible} onChange={(e) => update('isVisible', e.target.checked)} /> Hiển thị công khai</label></div>
         </div><div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 bg-slate-50/70 px-6 py-4"><p role={error ? 'alert' : 'status'} className={`text-sm ${error ? 'text-red-700' : success ? 'text-emerald-700' : 'text-slate-500'}`}>{error || success || (uploading ? 'Đang tải ảnh…' : 'Thay đổi được lưu vào portfolio.')}</p><div className="flex gap-2"><button type="button" disabled={busy || uploading} onClick={cancel} className="rounded-xl border px-4 py-2.5 text-sm font-semibold">Hủy</button><button disabled={busy || uploading} className="rounded-xl bg-blue-700 px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-50">{busy ? 'Đang lưu…' : editingId ? 'Lưu thay đổi' : 'Thêm dự án'}</button></div></div></form>
-      </section>
+      </section>)}
     </div></main>
   </div>;
 }

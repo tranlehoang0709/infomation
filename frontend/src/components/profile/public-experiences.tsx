@@ -38,13 +38,14 @@ export async function PublicExperiences() {
         <div>
           <div className="flex items-start gap-4">
             {item.companyLogo && <Image src={apiAssetUrl(item.companyLogo.filePath)} alt={item.companyLogo.altText ?? `${item.companyName} logo`} width={48} height={48} className="size-12 shrink-0 rounded-xl border border-slate-100 bg-white object-contain p-1.5" />}
-            <div className="min-w-0"><h3 className="text-lg font-semibold text-slate-900">{item.position}</h3><p className="mt-1 font-medium text-blue-700">{item.companyName}</p>
-              {(item.location || item.employmentType) && <p className="mt-1 text-sm text-slate-500">{[item.location, item.employmentType].filter(Boolean).join(' · ')}</p>}</div>
+            <div className="min-w-0"><span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Chức danh: </span><h3 className="inline text-lg font-semibold text-slate-900">{item.position}</h3><p className="mt-2 font-medium text-blue-700"><span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Công ty: </span>{item.companyName}</p>
+              {item.location && <p className="mt-2 text-sm text-slate-500"><span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Địa điểm: </span>{item.location}</p>}
+              {item.employmentType && <p className="mt-2 text-sm text-slate-500"><span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Hình thức làm việc: </span>{item.employmentType}</p>}</div>
           </div>
-          {item.description && <p className="mt-5 whitespace-pre-line text-sm leading-7 text-slate-600">{item.description}</p>}
-          {item.achievements.length > 0 && <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-6 text-slate-600">{item.achievements.map((achievement, index) => <li key={`${item.id}-${index}`}>{achievement}</li>)}</ul>}
+          {item.description && <p className="mt-5 whitespace-pre-line text-sm leading-7 text-slate-600"><span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Mô tả: </span>{item.description}</p>}
+          {item.achievements.length > 0 && <div className="mt-4"><span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Thành tựu: </span><ul className="inline list-disc space-y-2 pl-5 text-sm leading-6 text-slate-600">{item.achievements.map((achievement, index) => <li key={`${item.id}-${index}`}>{achievement}</li>)}</ul></div>}
         </div>
-        <p className="text-sm font-medium text-slate-500 sm:text-right">{dateRange(item)}</p>
+        <p className="text-sm font-medium text-slate-500 sm:text-right"><span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Thời gian: </span>{dateRange(item)}</p>
       </article>)}
     </div>
   </section>;

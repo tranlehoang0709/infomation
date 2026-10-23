@@ -61,12 +61,24 @@ Project images use existing `media_assets` and `portfolio_media` links. Public i
 
 Interest icons reuse `portfolio_media` with `entity_type=interest`, `media_role=icon`; no schema change is needed.
 
+## Skills
+
+| Method | Path | Access | Purpose |
+|---|---|---|---|
+| GET | `/skills/public` | Public | Lists visible skills for the configured published portfolio. |
+| GET | `/skills/admin` | Authenticated owner | Lists skills for the signed-in owner. |
+| POST | `/skills/admin` | Authenticated owner | Creates a skill. |
+| PATCH | `/skills/admin/:id` | Authenticated owner | Updates an owned skill. |
+| DELETE | `/skills/admin/:id` | Authenticated owner | Deletes an owned skill. |
+
+Skill proficiency is optional and constrained to 0 to 100. Skills use the existing `skills` table; no schema change is needed.
+
 ## Admin dashboard
 
 | Method | Path | Access | Purpose |
 |---|---|---|---|
 | GET | `/admin/dashboard` | Authenticated owner | Returns per-section totals, visible counts, portfolio publication state, and database query status for the owner's portfolio. |
 
-Education, Certificates, and Skills currently have database models but no module controllers/API implementation in this project version.
+Education and Certificates use their existing tables and owner-scoped APIs. Skills also use the existing table and owner-scoped CRUD API.
 
 PATCH `/profile/admin` nhận `fullName` (bắt buộc, tối đa 150), `headline` (200), `phone` (30), `contactEmail` (email, 255), `location` (255), `bio` (10.000), `avatarMediaId`, `cvMediaId` và `coverMediaId`. Chuỗi tùy chọn rỗng được chuẩn hóa thành `null`; media ID phải thuộc portfolio của chủ tài khoản và khớp loại tệp cho trường đó.

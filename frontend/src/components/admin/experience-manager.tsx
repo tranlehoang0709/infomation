@@ -35,6 +35,7 @@ export function ExperienceManager() {
   const [items, setItems] = useState<ExperienceRecord[]>([]);
   const [form, setForm] = useState<ExperienceInput>(emptyForm);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [formOpen, setFormOpen] = useState(false);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [savedLogoPath, setSavedLogoPath] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -74,6 +75,7 @@ export function ExperienceManager() {
     clearPreview();
     setForm(emptyForm);
     setEditingId(null);
+    setFormOpen(false);
     setError('');
     setSuccess('');
   }
@@ -82,6 +84,7 @@ export function ExperienceManager() {
     clearPreview();
     setForm(toInput(item));
     setEditingId(item.id);
+    setFormOpen(true);
     setSavedLogoPath(item.companyLogo?.filePath ?? null);
     setError('');
     setSuccess('');
@@ -211,6 +214,7 @@ export function ExperienceManager() {
           <p className="text-sm font-semibold text-blue-700">Nội dung hồ sơ</p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Kinh nghiệm làm việc</h1>
           <p className="mt-2 text-slate-600">Quản lý vị trí và thành tựu hiển thị trên trang cá nhân.</p>
+          <button type="button" onClick={() => { clearPreview(); setForm(emptyForm); setEditingId(null); setFormOpen(true); setError(''); setSuccess(''); }} className="mb-5 inline-flex items-center gap-2 rounded-xl bg-blue-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-800"><span aria-hidden="true" className="text-lg leading-none">+</span> Thêm kinh nghiệm</button>
           <div className="mt-7 space-y-3">
             {items.length === 0 ? <p className="rounded-2xl border border-dashed border-slate-300 bg-white px-5 py-8 text-sm text-slate-500">Chưa có kinh nghiệm làm việc.</p> : items.map((item) => (
               <article key={item.id} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -218,14 +222,14 @@ export function ExperienceManager() {
                   {item.companyLogo && <img crossOrigin="use-credentials" src={apiAssetUrl(item.companyLogo.filePath)} alt={item.companyLogo.altText ?? `${item.companyName} logo`} className="size-12 rounded-xl border border-slate-100 object-contain p-1" />}
                   <div className="min-w-0 flex-1"><h2 className="font-semibold text-slate-900">{item.position}</h2><p className="mt-1 text-sm text-slate-600">{item.companyName}{item.location ? ` · ${item.location}` : ''}</p>
                     <p className="mt-2 text-xs text-slate-500">{item.isVisible ? 'Đang hiển thị' : 'Đang ẩn'} · thứ tự {item.sortOrder}</p></div>
-                  <div className="flex gap-3 text-sm"><button type="button" onClick={() => edit(item)} className="font-semibold text-blue-700">Sửa</button><button type="button" disabled={busy} onClick={() => void remove(item)} className="font-semibold text-red-700 disabled:opacity-50">Xóa</button></div>
+                  <div className="flex gap-3 text-sm"><button type="button" onClick={() => edit(item)} aria-label="Sửa kinh nghiệm" title="Sửa kinh nghiệm" className="icon-action-button icon-edit-button font-semibold text-blue-700"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="m4 20 4.2-1 10.6-10.6a2.1 2.1 0 0 0-3-3L5.2 16 4 20Z"/><path d="m14.5 6.5 3 3"/></svg></button><button type="button" disabled={busy} onClick={() => void remove(item)} aria-label="Xóa kinh nghiệm" title="Xóa kinh nghiệm" className="icon-action-button icon-delete-button font-semibold text-red-700 disabled:opacity-50"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M4 7h16M10 11v6M14 11v6M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button></div>
                 </div>
               </article>
             ))}
           </div>
         </section>
 
-        <section className="self-start overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        {formOpen && (<section className="self-start overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
           <div className="border-b border-slate-100 px-6 py-5"><h2 className="font-semibold">{editingId ? 'Sửa kinh nghiệm' : 'Thêm kinh nghiệm'}</h2><p className="mt-1 text-sm text-slate-500">Công ty và chức danh là bắt buộc.</p></div>
           <div className="grid gap-4 px-6 pt-5 sm:grid-cols-2"><MediaPicker label="Logo công ty" value={form.companyLogoMediaId} accept="images" onChange={(value) => update('companyLogoMediaId', typeof value === 'string' ? value : null)} /></div>
           <form onSubmit={save}>
@@ -254,7 +258,7 @@ export function ExperienceManager() {
               <div className="flex gap-2"><button type="button" disabled={busy || uploading} onClick={cancelEdit} className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 disabled:opacity-50">Hủy</button><button disabled={busy || uploading} className="rounded-xl bg-blue-700 px-5 py-2.5 text-sm font-semibold text-white hover:bg-blue-800 disabled:cursor-wait disabled:opacity-60">{busy ? 'Đang lưu…' : editingId ? 'Lưu thay đổi' : 'Thêm kinh nghiệm'}</button></div>
             </div>
           </form>
-        </section>
+        </section>)}
       </div>
     </main>
   </div>;

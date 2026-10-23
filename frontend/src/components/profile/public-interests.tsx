@@ -16,8 +16,8 @@ export async function PublicInterests() {
     <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {interests.map((item) => <article key={item.id} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
         {item.icon && <Image src={apiAssetUrl(item.icon.filePath)} alt={item.icon.altText ?? ''} width={48} height={48} className="mb-4 size-12 rounded-xl object-cover" />}
-        <h3 className="font-semibold text-slate-900">{item.title}</h3>
-        {item.description && <p className="mt-2 whitespace-pre-line text-sm leading-6 text-slate-600">{item.description}</p>}
+        <h3 className="font-semibold text-slate-900"><span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Sở thích: </span>{item.title}</h3>
+        {item.description && <p className="mt-2 whitespace-pre-line text-sm leading-6 text-slate-600"><span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Mô tả: </span>{item.description}</p>}
       </article>)}
     </div>
   </section>;

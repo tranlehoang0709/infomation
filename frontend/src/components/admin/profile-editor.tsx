@@ -89,11 +89,11 @@ export function ProfileEditor() {
           <div className="border-b border-slate-100 px-6 py-5 sm:px-8"><h2 className="font-semibold">Thông tin cơ bản</h2><p className="mt-1 text-sm text-slate-500">Các trường có dấu * là bắt buộc.</p></div>
           <div className="grid gap-5 p-6 sm:grid-cols-2 sm:p-8">
             <label className="field sm:col-span-2">Họ và tên *<input className="control" required minLength={1} maxLength={150} value={form.fullName} onChange={(e) => change('fullName', e.target.value)} placeholder="Ví dụ: Nguyễn Minh Anh" /></label>
-            <label className="field sm:col-span-2">Chức danh / giới thiệu ngắn<input className="control" maxLength={200} value={form.headline ?? ''} onChange={(e) => change('headline', e.target.value)} placeholder="Ví dụ: Frontend Developer · UI Engineer" /></label>
+            <label className="field sm:col-span-2">Chức danh trên Tổng quan<input className="control" maxLength={200} value={form.headline ?? ''} onChange={(e) => change('headline', e.target.value)} placeholder="Ví dụ: Frontend Developer · UI Engineer" /></label>
             <label className="field">Email liên hệ<input className="control" type="email" maxLength={255} value={form.contactEmail ?? ''} onChange={(e) => change('contactEmail', e.target.value)} placeholder="ban@example.com" /></label>
             <label className="field">Số điện thoại<input className="control" type="tel" maxLength={30} value={form.phone ?? ''} onChange={(e) => change('phone', e.target.value)} placeholder="+84 …" /></label>
             <label className="field sm:col-span-2">Địa điểm<input className="control" maxLength={255} value={form.location ?? ''} onChange={(e) => change('location', e.target.value)} placeholder="Thành phố, quốc gia" /></label>
-            <label className="field sm:col-span-2">Giới thiệu<textarea className="control min-h-40 resize-y leading-6" maxLength={10000} value={form.bio ?? ''} onChange={(e) => change('bio', e.target.value)} placeholder="Chia sẻ đôi nét về kinh nghiệm, thế mạnh và điều bạn đang tìm kiếm…" /></label>
+            <label className="field sm:col-span-2">Lời giới thiệu trên Tổng quan<textarea className="control min-h-40 resize-y leading-6" maxLength={10000} value={form.bio ?? ''} onChange={(e) => change('bio', e.target.value)} placeholder="Giới thiệu ngắn về bạn, định hướng và điều bạn đang tìm kiếm…" /></label>
           </div>
           <div className="grid gap-5 border-t border-slate-100 px-6 py-6 sm:grid-cols-2 lg:grid-cols-3 sm:px-8">
             <MediaPicker label="Ảnh đại diện" value={form.avatarMediaId} accept="images" onChange={(value) => change('avatarMediaId', typeof value === 'string' ? value : null)} />

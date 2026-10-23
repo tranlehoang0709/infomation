@@ -57,7 +57,7 @@ Media linked to profile fields or portfolio content cannot be deleted. Unlink it
 
 ## Tình trạng module hiện tại
 
-Frontend/backend đã có luồng cho Profile, Experiences, Projects, Media, Interests, xác thực chủ sở hữu và Admin Dashboard. Database có model Education, Certificate và Skill trong Prisma schema, nhưng phiên bản mã nguồn hiện tại chưa có controller/service CRUD hay trang frontend cho ba module này. Dashboard đếm dữ liệu của chúng nhưng không cung cấp link giả tới trang quản lý. Không coi ba module đó là đã hoàn tất.
+Profile, education, certificates, skills, experience, projects, media, interests, owner authentication, and the admin dashboard use the existing schema and owner-scoped APIs. These sections need no database migration.
 
 Dashboard API là `GET /api/admin/dashboard` và yêu cầu cookie admin hợp lệ. Thống kê được truy vấn từ MySQL theo portfolio của user đăng nhập; database không được tạo lại hoặc migrate bởi hướng dẫn chạy này.
 

@@ -19,6 +19,7 @@ export function InterestManager() {
   const [items, setItems] = useState<InterestRecord[]>([]);
   const [form, setForm] = useState<FormData>(blank);
   const [editing, setEditing] = useState<string | null>(null);
+  const [formOpen, setFormOpen] = useState(false);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
@@ -41,7 +42,7 @@ export function InterestManager() {
   }, [router]);
 
   const change = <K extends keyof FormData>(key: K, value: FormData[K]) => { setForm((old) => ({ ...old, [key]: value })); setError(''); setSuccess(''); };
-  function cancel() { setForm(blank); setEditing(null); setError(''); setSuccess(''); }
+  function cancel() { setForm(blank); setEditing(null); setFormOpen(false); setError(''); setSuccess(''); }
 
   async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); setBusy(true); setError(''); setSuccess('');
@@ -77,13 +78,14 @@ export function InterestManager() {
     </aside>
     <main className="px-5 py-8 sm:px-8 lg:px-12 lg:py-12"><div className="mx-auto grid max-w-6xl gap-8 xl:grid-cols-[minmax(0,1fr)_minmax(320px,.85fr)]">
       <section><p className="text-sm font-semibold text-blue-700">Nội dung hồ sơ</p><h1 className="mt-2 text-3xl font-semibold tracking-tight">Sở thích</h1><p className="mt-2 text-slate-600">Quản lý những điều bạn muốn chia sẻ trên portfolio.</p>
+        <button type="button" onClick={() => { setForm(blank); setEditing(null); setFormOpen(true); setError(''); setSuccess(''); }} className="mt-5 inline-flex items-center gap-2 rounded-xl bg-blue-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-800"><span aria-hidden="true" className="text-lg leading-none">+</span> Thêm sở thích</button>
         <div className="mt-7 space-y-3">{items.length === 0 ? <p className="rounded-2xl border border-dashed border-slate-300 bg-white px-5 py-8 text-sm text-slate-500">Chưa có sở thích nào.</p> : items.map((item) => <article key={item.id} className="flex items-start gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
           {item.icon && <img crossOrigin="use-credentials" src={apiAssetUrl(item.icon.filePath)} alt={item.icon.altText ?? ''} className="size-12 rounded-xl object-cover" />}
           <div className="min-w-0 flex-1"><h2 className="font-semibold">{item.title}</h2>{item.description && <p className="mt-1 line-clamp-3 text-sm text-slate-600">{item.description}</p>}<p className="mt-2 text-xs text-slate-500">{item.isVisible ? 'Công khai' : 'Đã ẩn'} · thứ tự {item.sortOrder}</p></div>
-          <div className="flex gap-3 text-sm"><button type="button" onClick={() => { setForm(toForm(item)); setEditing(item.id); setError(''); setSuccess(''); }} className="font-semibold text-blue-700">Sửa</button><button type="button" disabled={busy} onClick={() => void remove(item)} className="font-semibold text-red-700 disabled:opacity-50">Xóa</button></div>
+          <div className="flex gap-3 text-sm"><button type="button" onClick={() => { setForm(toForm(item)); setEditing(item.id); setFormOpen(true); setError(''); setSuccess(''); }} aria-label="Sửa sở thích" title="Sửa sở thích" className="icon-action-button icon-edit-button font-semibold text-blue-700"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="m4 20 4.2-1 10.6-10.6a2.1 2.1 0 0 0-3-3L5.2 16 4 20Z"/><path d="m14.5 6.5 3 3"/></svg></button><button type="button" disabled={busy} onClick={() => void remove(item)} aria-label="Xóa sở thích" title="Xóa sở thích" className="icon-action-button icon-delete-button font-semibold text-red-700 disabled:opacity-50"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M4 7h16M10 11v6M14 11v6M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button></div>
         </article>)}</div>
       </section>
-      <section className="self-start overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"><div className="border-b border-slate-100 px-6 py-5"><h2 className="font-semibold">{editing ? 'Sửa sở thích' : 'Thêm sở thích'}</h2><p className="mt-1 text-sm text-slate-500">Tiêu đề là bắt buộc. Ảnh chọn từ thư viện Media.</p></div>
+      {formOpen && (<section className="self-start overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"><div className="border-b border-slate-100 px-6 py-5"><h2 className="font-semibold">{editing ? 'Sửa sở thích' : 'Thêm sở thích'}</h2><p className="mt-1 text-sm text-slate-500">Tiêu đề là bắt buộc. Ảnh chọn từ thư viện Media.</p></div>
         <form onSubmit={(event) => void save(event)}><div className="grid gap-4 p-6">
           <label className="field">Ảnh / biểu tượng<MediaPicker label="Chọn ảnh từ Media" value={form.iconMediaId} onChange={(value) => change('iconMediaId', typeof value === 'string' ? value : null)} /></label>
           <label className="field">Tiêu đề *<input className="control" required maxLength={150} value={form.title} onChange={(event) => change('title', event.target.value)} /></label>
@@ -91,7 +93,7 @@ export function InterestManager() {
           <label className="field">Thứ tự hiển thị<input className="control" type="number" min={0} max={2147483647} step={1} value={form.sortOrder} onChange={(event) => change('sortOrder', Number(event.target.value))} /></label>
           <label className="flex items-center gap-2 text-sm font-medium text-slate-700"><input type="checkbox" checked={form.isVisible} onChange={(event) => change('isVisible', event.target.checked)} /> Hiển thị công khai</label>
         </div><div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 bg-slate-50/70 px-6 py-4"><p role={error ? 'alert' : 'status'} className={`text-sm ${error ? 'text-red-700' : 'text-emerald-700'}`}>{error || success || 'Thay đổi được lưu vào portfolio.'}</p><div className="flex gap-2"><button type="button" disabled={busy} onClick={cancel} className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold disabled:opacity-50">Hủy</button><button disabled={busy} className="rounded-xl bg-blue-700 px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-60">{busy ? 'Đang lưu…' : editing ? 'Lưu thay đổi' : 'Thêm sở thích'}</button></div></div></form>
-      </section>
+      </section>)}
     </div></main>
   </div>;
 }
